@@ -1,25 +1,25 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useRef, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
-import { useDispatch } from 'react-redux';
-import { authActions } from '../../store/auth-slice';
+import { useDispatch } from 'react-redux'
+import { authActions } from '../../store/auth-slice'
 
-import { signupEmailPassword, loginEmailPassword } from '../../api/api';
+import { signupEmailPassword, loginEmailPassword } from '../../api/api'
 
-import Card from '../UI/Card';
-import Input from '../UI/Input';
-import useInput from '../../hooks/use-input';
+import Card from '../UI/Card'
+import Input from '../UI/Input'
+import useInput from '../../hooks/use-input'
 
-import classes from './AuthForm.module.css';
+import classes from './AuthForm.module.css'
 
 const AuthForm = () => {
-  const [isLogin, setIsLogin] = useState(true);
+  const [isLogin, setIsLogin] = useState(true)
 
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
 
-  const validateEmail = (value) => value.trim() !== '' && value.includes('@');
-  const validatePassword = (value) => value.trim() !== '' && value.length >= 6;
+  const validateEmail = value => value.trim() !== '' && value.includes('@')
+  const validatePassword = value => value.trim() !== '' && value.length >= 6
 
   const {
     value: enteredEmail,
@@ -28,7 +28,7 @@ const AuthForm = () => {
     inputChangeHandler: emailChangeHandler,
     inputBlurHandler: emailBlurHandler,
     resetInput: resetEmailInput,
-  } = useInput(validateEmail);
+  } = useInput(validateEmail)
 
   const {
     value: enteredPassword,
@@ -37,51 +37,39 @@ const AuthForm = () => {
     inputChangeHandler: passwordChangeHandler,
     inputBlurHandler: passwordBlurHandler,
     resetInput: resetPasswordInput,
-  } = useInput(validatePassword);
+  } = useInput(validatePassword)
 
   // Form validity
-  let formIsValid = false;
+  let formIsValid = false
 
   if (enterdEmailIsValid && enteredPasswordIsValid) {
-    formIsValid = true;
+    formIsValid = true
   }
 
-  const formSubmitHandler = async (event) => {
-    event.preventDefault();
+  const formSubmitHandler = async event => {
+    event.preventDefault()
 
     if (!formIsValid) {
-      return;
+      return
     }
 
-    if (isLogin) {
-      const { idToken, expiresIn } = await loginEmailPassword(
-        enteredEmail,
-        enteredPassword
-      );
+    const authService = isLogin ? loginEmailPassword : signupEmailPassword
 
-      const expirationTime = Date.now() + expiresIn * 1000;
+    const { idToken, expiresIn } = await authService(enteredEmail, enteredPassword)
 
-      dispatch(authActions.login({ idToken, expirationTime }));
-    } else {
-      const { idToken, expiresIn } = await signupEmailPassword(
-        enteredEmail,
-        enteredPassword
-      );
+    const expirationTime = Date.now() + expiresIn * 1000
 
-      const expirationTime = Date.now() + expiresIn * 1000;
+    dispatch(authActions.login({ idToken, expirationTime }))
 
-      dispatch(authActions.login({ idToken, expirationTime }));
-    }
+    resetEmailInput()
+    resetPasswordInput()
 
-    resetEmailInput();
-    resetPasswordInput();
-
-    navigate('/products', { replace: true });
-  };
+    navigate('/products', { replace: true })
+  }
 
   const switchAuthModeHandler = () => {
-    setIsLogin((prevState) => !prevState);
-  };
+    setIsLogin(prevState => !prevState)
+  }
 
   return (
     <div className={classes.flex}>
@@ -99,6 +87,8 @@ const AuthForm = () => {
             errorMessage="Please enter a valid email."
           />
 
+          {/* <Input validate={value=>fsdfsdf}></Input> */}
+
           <Input
             id="password"
             type="password"
@@ -113,21 +103,17 @@ const AuthForm = () => {
           <div className={classes.actions}>
             {<button>{isLogin ? 'Login' : 'Create Account'}</button>}
 
-            <button
-              type="button"
-              className={classes.toggle}
-              onClick={switchAuthModeHandler}
-            >
+            <button type="button" className={classes.toggle} onClick={switchAuthModeHandler}>
               {isLogin ? 'Create new account' : 'Login with existing account'}
             </button>
           </div>
         </form>
       </Card>
     </div>
-  );
-};
+  )
+}
 
-export default AuthForm;
+export default AuthForm
 
 // return (
 //   <div className={classes.container}>

@@ -1,21 +1,22 @@
-import { useSelector, useDispatch } from 'react-redux';
-import { uiActions } from '../../store/ui-slice';
+import { useSelector, useDispatch } from 'react-redux'
+import { uiActions } from '../../store/ui-slice'
 
-import CartItem from './CartItem';
-import Modal from '../UI/Modal';
+import CartItem from './CartItem'
+import Modal from '../UI/Modal'
 
-import classes from './Cart.module.css';
+import classes from './Cart.module.css'
 
 const Cart = () => {
-  const dispatch = useDispatch();
-  const items = useSelector((state) => state.cart.items);
-  const totalPrice = useSelector((state) => state.cart.totalPrice);
+  const dispatch = useDispatch()
+  const items = useSelector(state => state.cart.items)
+  const totalPrice = useSelector(state => state.cart.totalPrice)
+  const cartIsShown = useSelector(state => state.ui.cartIsShown)
 
   const onCloseHandler = () => {
-    dispatch(uiActions.closeCart());
-  };
+    dispatch(uiActions.closeCart())
+  }
 
-  const cartItems = items.map((item) => (
+  const cartItems = items.map(item => (
     <CartItem
       key={item.id}
       item={{
@@ -26,11 +27,15 @@ const Cart = () => {
         price: item.price,
       }}
     />
-  ));
+  ))
 
-  let isEmpty = true;
+  let isEmpty = true
   if (cartItems.length > 0) {
-    isEmpty = false;
+    isEmpty = false
+  }
+
+  if (!cartIsShown) {
+    return null
   }
 
   return (
@@ -40,9 +45,7 @@ const Cart = () => {
         <span>${totalPrice}</span>
       </div>
 
-      {isEmpty && (
-        <p className={classes['cart-empty']}>Your shopping cart is empty!</p>
-      )}
+      {isEmpty && <p className={classes['cart-empty']}>Your shopping cart is empty!</p>}
 
       <ul>{cartItems}</ul>
 
@@ -53,7 +56,7 @@ const Cart = () => {
         {!isEmpty && <button className={classes.button}>Order</button>}
       </div>
     </Modal>
-  );
-};
+  )
+}
 
-export default Cart;
+export default Cart
