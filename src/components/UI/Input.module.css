@@ -1,0 +1,37 @@
+.control {
+  margin-bottom: 20px;
+  font-size: 20px;
+}
+
+.control label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.control input {
+  font: inherit;
+  font-size: 20px;
+  width: 100%;
+  border: 1px solid #2c3333;
+  border-radius: 5px;
+  padding: 5px;
+  background-color: transparent;
+  width: 100%;
+  /* text-align: left; */
+}
+
+/* .control.valid input {
+    border: 6px solid #29653c;
+  } */
+
+.invalid input {
+  border: 1.5px solid #b40e0e;
+  background-color: #dedede;
+}
+
+.control p {
+  font-size: 16px;
+  color: #b40e0e;
+  /* text-align: left; */
+}
