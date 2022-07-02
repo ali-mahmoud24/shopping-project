@@ -1,76 +1,55 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit'
+import { calculateRemainingTime, retriveStoredToken } from '../hooks/use-auth'
 
-let logoutTimer;
+let logoutTimer
 
-const calculateRemainingTime = (expirationTime) => expirationTime - Date.now();
+let initialToken
+let userIsLoggedIn
 
-const retriveStoredToken = () => {
-  const storedToken = localStorage.getItem('token');
-  const storedExpirationDate = localStorage.getItem('expirationTime');
-
-  const remainingTime = calculateRemainingTime(storedExpirationDate);
-
-  if (remainingTime <= 60000) {
-    localStorage.removeItem('token');
-    localStorage.removeItem('expirationTime');
-    return null;
-  }
-
-  return { token: storedToken, duration: remainingTime };
-};
-
-const tokenData = retriveStoredToken();
-let initialToken;
-let userIsLoggedIn;
+const tokenData = retriveStoredToken()
 
 if (tokenData) {
-  initialToken = tokenData.token;
-  userIsLoggedIn = !!tokenData.token;
+  initialToken = tokenData.token
+  userIsLoggedIn = !!tokenData.token
 }
 
 const authInitialState = {
   token: tokenData ? initialToken : '',
   isLoggedIn: tokenData ? userIsLoggedIn : false,
-};
+}
 
 const authSlice = createSlice({
   name: 'auth',
   initialState: authInitialState,
   reducers: {
     login(state, action) {
-      const { idToken, expirationTime } = action.payload;
+      const { idToken, expirationTime } = action.payload
 
-      state.token = idToken;
+      state.token = idToken
 
-      localStorage.setItem('token', idToken);
-      localStorage.setItem('expirationTime', expirationTime);
+      localStorage.setItem('token', idToken)
+      localStorage.setItem('expirationTime', expirationTime)
 
-      const remainingTime = calculateRemainingTime(expirationTime);
+      const remainingTime = calculateRemainingTime(expirationTime)
 
-      logoutTimer = setTimeout(authSlice.caseReducers.logout, 3000);
-
-      state.isLoggedIn = true;
+      state.isLoggedIn = true
     },
 
     logout(state) {
-      state.isLoggedIn = false;
-      state.token = null;
+      console.log('logout')
+      state.isLoggedIn = false
+      state.token = null
 
-      localStorage.removeItem('token');
-      localStorage.removeItem('expirationTime');
+      localStorage.removeItem('token')
+      localStorage.removeItem('expirationTime')
 
       if (logoutTimer) {
-        clearTimeout(logoutTimer);
+        clearTimeout(logoutTimer)
       }
     },
   },
-});
+})
 
-if (tokenData) {
-  console.log(tokenData.duration);
-  logoutTimer = setTimeout(authSlice.caseReducers.logout, tokenData.duration);
-}
+export const authActions = authSlice.actions
 
-export const authActions = authSlice.actions;
-
-export default authSlice.reducer;
+export default authSlice.reducer

@@ -19,8 +19,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 65px;
-  padding: 2px 20px;
+  min-width: 65px;
+  padding: 2px 8px;
   border-radius: 30px;
   background-color: #064663;
   color: white;
@@ -49,6 +49,7 @@
   border: 1px solid #064663;
   border-radius: 5px;
   cursor: pointer;
+  min-width: 106px;
 }
 
 .actions button:hover,

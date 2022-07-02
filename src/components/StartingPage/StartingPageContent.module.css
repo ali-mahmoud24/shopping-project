@@ -7,3 +7,11 @@
   color: #fff;
   font-size: 4rem;
 }
+
+
+.starting a {
+  text-decoration: none;
+  color: #fcba28;
+  font-weight: 600;
+  font-size: 20;
+}
