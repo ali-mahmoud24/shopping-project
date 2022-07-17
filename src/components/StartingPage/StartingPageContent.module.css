@@ -5,13 +5,25 @@
 
 .starting h1 {
   color: #fff;
-  font-size: 4rem;
+  font-size: 3.5rem;
 }
 
+.starting button {
+  background-color: transparent;
+  /* border: 2px solid #2f87e0; */
+  border: none;
+  padding: 5px;
+  border-radius: 10px;
+}
 
 .starting a {
   text-decoration: none;
   color: #fcba28;
-  font-weight: 600;
-  font-size: 20;
+  font-weight: 400;
+  font-size: 35px;
+}
+
+.starting button:hover {
+  text-decoration: underline;
+  /* border: 2px solid #fff; */
 }

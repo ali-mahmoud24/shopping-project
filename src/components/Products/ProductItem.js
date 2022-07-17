@@ -1,24 +1,26 @@
-import { useState } from 'react'
-import { useDispatch } from 'react-redux'
-import { cartActions } from '../../store/cart-slice'
+import { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { cartActions } from '../../store/cart-slice';
 
-import Card from '../UI/Card'
+import Card from '../UI/Card';
+import LoadingSpinner from '../UI/LoadingSpinner';
 
-import classes from './ProductItem.module.css'
+import classes from './ProductItem.module.css';
 
-const ProductItem = props => {
-  const dispatch = useDispatch()
-  const [isLoading, setIsLoading] = useState()
+const ProductItem = (props) => {
+  const dispatch = useDispatch();
+  const [isLoading, setIsLoading] = useState();
 
-  const { id, title, description, price } = props
+  const { id, title, description, price } = props;
 
   const addToCartHandler = () => {
-    setIsLoading(true)
-    dispatch(cartActions.addItemToCart({ id, title, price }))
+    setIsLoading(true);
+    dispatch(cartActions.addItemToCart({ id, title, price }));
+
     setTimeout(() => {
-      setIsLoading(false)
-    }, 500)
-  }
+      setIsLoading(false);
+    }, 300);
+  };
 
   return (
     <li className={classes.item}>
@@ -29,11 +31,15 @@ const ProductItem = props => {
 
         <div className={classes.actions}>
           <div className={classes.price}>${price.toFixed(2)}</div>
-          <button onClick={addToCartHandler}>{isLoading ? '.....' : 'Add to Cart'}</button>
+
+          <button onClick={addToCartHandler} disabled={isLoading}>
+            {isLoading ? <LoadingSpinner /> : 'Add to Cart'}
+          </button>
         </div>
+
       </Card>
     </li>
-  )
-}
+  );
+};
 
-export default ProductItem
+export default ProductItem;

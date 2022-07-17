@@ -1,37 +1,42 @@
-import { useSelector } from 'react-redux';
 import { Routes, Route, Navigate } from 'react-router-dom';
+
+import { useAuthContext } from './context/auth-context';
 
 import Layout from './components/Layout/Layout';
 import Cart from './components/Cart/Cart';
+
 import HomePage from './pages/HomePage';
 import AuthPage from './pages/AuthPage';
 import ProductsPage from './pages/ProductsPage';
 import NotFoundPage from './pages/NotFoundPage';
-import useAuth from './hooks/use-auth';
+
+// TODO ===>
+// 1- Refactor the SignedInProtectedRoute and ProtectedRoute components to a seperate file
+// 2- Style the 404 Not found page
+// 3- Style the 'Start shopping' button in StartingPageContent component
+// 4- Style the Products + ProductItem components better (problems with flexbox and aligning items better UI overall)
+// 5- Resposive design
+// 6- Add green border to inputs when inputs are valid
 
 const SignedInProtectedRoute = ({ children }) => {
-  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+  const { isLoggedIn } = useAuthContext();
 
   if (isLoggedIn) {
-    return <Navigate to="/" replace />;
+    return <Navigate to="/welcome" replace />;
   }
-
   return children;
 };
 
 const ProtectedRoute = ({ children }) => {
-  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+  const { isLoggedIn } = useAuthContext();
 
   if (!isLoggedIn) {
     return <Navigate to="/auth" replace />;
   }
-
   return children;
 };
 
-function App() {
-  useAuth();
-
+const App = () => {
   return (
     <Layout>
       <Cart />
@@ -58,6 +63,6 @@ function App() {
       </Routes>
     </Layout>
   );
-}
+};
 
 export default App;

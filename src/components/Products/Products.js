@@ -54,7 +54,7 @@ const Products = () => {
     },
   ];
 
-  const products = DUMMY_PRODUCTS.map(product => (
+  const products = DUMMY_PRODUCTS.map((product) => (
     <ProductItem
       key={product.id}
       id={product.id}
@@ -67,7 +67,7 @@ const Products = () => {
   return (
     <section className={classes.products}>
       <h1>Welcome to my Shopping app!</h1>
-      <ul>{products}</ul>
+        <ul>{products}</ul>
     </section>
   );
 };
