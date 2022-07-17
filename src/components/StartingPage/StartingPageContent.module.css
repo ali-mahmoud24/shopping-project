@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 .starting {
   margin: 6rem auto;
   text-align: center;
@@ -27,3 +28,34 @@
   text-decoration: underline;
   /* border: 2px solid #fff; */
 }
+=======
+.starting {
+  margin: 6rem auto;
+  text-align: center;
+}
+
+.starting h1 {
+  color: #fff;
+  font-size: 3.5rem;
+}
+
+.starting button {
+  background-color: transparent;
+  /* border: 2px solid #2f87e0; */
+  border: none;
+  padding: 5px;
+  border-radius: 10px;
+}
+
+.starting a {
+  text-decoration: none;
+  color: #fcba28;
+  font-weight: 400;
+  font-size: 35px;
+}
+
+.starting button:hover {
+  text-decoration: underline;
+  /* border: 2px solid #fff; */
+}
+>>>>>>> 7760c1b4d2de1acaffc77e3548ad0edc746d2589

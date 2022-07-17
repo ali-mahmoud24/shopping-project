@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 .products h1 {
   text-align: center;
   color: #fff;
@@ -13,4 +14,21 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
+=======
+.products h1 {
+  text-align: center;
+  color: #fff;
+  font-size: 30px;
+}
+
+.products ul {
+  width: 95%;
+  margin: 2rem 75px;
+  list-style: none;
+  padding: 0;
+
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+>>>>>>> 7760c1b4d2de1acaffc77e3548ad0edc746d2589
 }
