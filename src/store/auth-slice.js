@@ -1,55 +1,54 @@
-import { createSlice } from '@reduxjs/toolkit'
-import { calculateRemainingTime, retriveStoredToken } from '../hooks/use-auth'
+import { createSlice } from '@reduxjs/toolkit';
+import { calculateRemainingTime, retrieveStoredToken } from '../hooks/use-auth';
 
-let logoutTimer
+let logoutTimer;
 
-let initialToken
-let userIsLoggedIn
+let initialToken;
+let userIsLoggedIn;
 
-const tokenData = retriveStoredToken()
+const tokenData = retrieveStoredToken();
 
 if (tokenData) {
-  initialToken = tokenData.token
-  userIsLoggedIn = !!tokenData.token
+  initialToken = tokenData.token;
+  userIsLoggedIn = !!tokenData.token;
 }
 
 const authInitialState = {
   token: tokenData ? initialToken : '',
   isLoggedIn: tokenData ? userIsLoggedIn : false,
-}
+};
 
 const authSlice = createSlice({
   name: 'auth',
   initialState: authInitialState,
   reducers: {
     login(state, action) {
-      const { idToken, expirationTime } = action.payload
+      const { idToken, expirationTime } = action.payload;
 
-      state.token = idToken
+      state.token = idToken;
+      state.isLoggedIn = true;
 
-      localStorage.setItem('token', idToken)
-      localStorage.setItem('expirationTime', expirationTime)
+      localStorage.setItem('token', idToken);
+      localStorage.setItem('expirationTime', expirationTime);
 
-      const remainingTime = calculateRemainingTime(expirationTime)
-
-      state.isLoggedIn = true
+      // const remainingTime = calculateRemainingTime(expirationTime);
     },
 
     logout(state) {
-      console.log('logout')
-      state.isLoggedIn = false
-      state.token = null
+      console.log('logout');
+      state.token = null;
+      state.isLoggedIn = false;
 
-      localStorage.removeItem('token')
-      localStorage.removeItem('expirationTime')
+      localStorage.removeItem('token');
+      localStorage.removeItem('expirationTime');
 
       if (logoutTimer) {
-        clearTimeout(logoutTimer)
+        clearTimeout(logoutTimer);
       }
     },
   },
-})
+});
 
-export const authActions = authSlice.actions
+export const authActions = authSlice.actions;
 
-export default authSlice.reducer
+export default authSlice.reducer;

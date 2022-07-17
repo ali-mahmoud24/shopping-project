@@ -1,25 +1,24 @@
-import { useRef, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-import { useDispatch } from 'react-redux'
-import { authActions } from '../../store/auth-slice'
+import Card from '../UI/Card';
+import Input from '../UI/Input';
+import useInput from '../../hooks/use-input';
 
-import { signupEmailPassword, loginEmailPassword } from '../../api/api'
+import { login, signup } from '../../firebase/firebase-auth';
+import { useAuthContext } from '../../context/auth-context';
 
-import Card from '../UI/Card'
-import Input from '../UI/Input'
-import useInput from '../../hooks/use-input'
-
-import classes from './AuthForm.module.css'
+import classes from './AuthForm.module.css';
 
 const AuthForm = () => {
-  const [isLogin, setIsLogin] = useState(true)
+  const { login: loginCtx } = useAuthContext();
 
-  const navigate = useNavigate()
-  const dispatch = useDispatch()
+  const [isLoggingIn, setIsLoggingIn] = useState(true);
 
-  const validateEmail = value => value.trim() !== '' && value.includes('@')
-  const validatePassword = value => value.trim() !== '' && value.length >= 6
+  const navigate = useNavigate();
+
+  const validateEmail = value => value.trim() !== '' && value.includes('@');
+  const validatePassword = value => value.trim() !== '' && value.length >= 6;
 
   const {
     value: enteredEmail,
@@ -28,7 +27,7 @@ const AuthForm = () => {
     inputChangeHandler: emailChangeHandler,
     inputBlurHandler: emailBlurHandler,
     resetInput: resetEmailInput,
-  } = useInput(validateEmail)
+  } = useInput(validateEmail);
 
   const {
     value: enteredPassword,
@@ -37,44 +36,51 @@ const AuthForm = () => {
     inputChangeHandler: passwordChangeHandler,
     inputBlurHandler: passwordBlurHandler,
     resetInput: resetPasswordInput,
-  } = useInput(validatePassword)
+  } = useInput(validatePassword);
 
   // Form validity
-  let formIsValid = false
+  let formIsValid = false;
 
   if (enterdEmailIsValid && enteredPasswordIsValid) {
-    formIsValid = true
+    formIsValid = true;
   }
 
-  const formSubmitHandler = async event => {
-    event.preventDefault()
+  const formSubmitHandler = async (event) => {
+    event.preventDefault();
 
     if (!formIsValid) {
-      return
+      return;
     }
 
-    const authService = isLogin ? loginEmailPassword : signupEmailPassword
+    const authService = isLoggingIn ? login : signup;
 
-    const { idToken, expiresIn } = await authService(enteredEmail, enteredPassword)
+    try {
+      const { idToken, expirationTime } = await authService(
+        enteredEmail,
+        enteredPassword
+      );
 
-    const expirationTime = Date.now() + expiresIn * 1000
+      loginCtx(idToken, expirationTime);
 
-    dispatch(authActions.login({ idToken, expirationTime }))
+      resetEmailInput();
+      resetPasswordInput();
 
-    resetEmailInput()
-    resetPasswordInput()
-
-    navigate('/products', { replace: true })
-  }
+      navigate('/products', { replace: true });
+    } catch (error) {
+      const errorCode = error.code;
+      alert(errorCode);
+    }
+  };
 
   const switchAuthModeHandler = () => {
-    setIsLogin(prevState => !prevState)
-  }
+    setIsLoggingIn(prevState => !prevState);
+  };
 
   return (
     <div className={classes.flex}>
       <Card className={classes.card}>
-        <h1>{isLogin ? 'Login' : 'Sign Up'}</h1>
+        <h1>{isLoggingIn ? 'Login' : 'Sign Up'}</h1>
+
         <form onSubmit={formSubmitHandler}>
           <Input
             id="email"
@@ -87,8 +93,6 @@ const AuthForm = () => {
             errorMessage="Please enter a valid email."
           />
 
-          {/* <Input validate={value=>fsdfsdf}></Input> */}
-
           <Input
             id="password"
             type="password"
@@ -97,23 +101,29 @@ const AuthForm = () => {
             onBlurHandler={passwordBlurHandler}
             InputHasError={passwordInputHasError}
             value={enteredPassword}
-            errorMessage="Please enter password more than 6 characters."
+            errorMessage="Please enter a password more than 6 characters."
           />
 
           <div className={classes.actions}>
-            {<button>{isLogin ? 'Login' : 'Create Account'}</button>}
+            {<button>{isLoggingIn ? 'Login' : 'Create Account'}</button>}
 
-            <button type="button" className={classes.toggle} onClick={switchAuthModeHandler}>
-              {isLogin ? 'Create new account' : 'Login with existing account'}
+            <button
+              type="button"
+              className={classes.toggle}
+              onClick={switchAuthModeHandler}
+            >
+              {isLoggingIn
+                ? 'Create new account'
+                : 'Login with existing account'}
             </button>
           </div>
         </form>
       </Card>
     </div>
-  )
-}
+  );
+};
 
-export default AuthForm
+export default AuthForm;
 
 // return (
 //   <div className={classes.container}>

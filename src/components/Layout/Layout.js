@@ -1,10 +1,10 @@
 import MainHeader from './MainHeader';
 
-const Layout = (props) => {
+const Layout = ({ children }) => {
   return (
     <>
       <MainHeader />
-      <main>{props.children}</main>
+      <main>{children}</main>
     </>
   );
 };
